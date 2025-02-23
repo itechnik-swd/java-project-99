@@ -18,11 +18,6 @@ application {
     mainClass = "hexlet.code.AppApplication"
 }
 
-checkstyle {
-    toolVersion = "10.12.4"
-    configFile = file("${rootDir}/app/config/checkstyle/checkstyle.xml")
-}
-
 jacoco {
     toolVersion = "0.8.10"
 }
