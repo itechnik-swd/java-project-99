@@ -53,7 +53,7 @@ dependencies {
 
     // Зависимость нужна для работы механизма Spring Data JPA в тестах.
     // Позволяет автоматически создавать объекты на базе сущностей и сохранять их в базу.
-    implementation("net.datafaker:datafaker:2.0.2")
+    implementation("net.datafaker:datafaker:2.4.2")
     implementation("org.instancio:instancio-junit:3.6.0")
 
     // implementation("org.mockito:mockito-core:5.15.2")

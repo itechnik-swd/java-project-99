@@ -11,15 +11,16 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserUpdateDTO {
-    @NotNull
-    private JsonNullable<String> firstName;
-
-    @NotNull
-    private JsonNullable<String> lastName;
 
     @Email
     private String email;
 
     @Size(min = 3)
     private String password;
+
+    @NotNull
+    private JsonNullable<String> firstName;
+
+    @NotNull
+    private JsonNullable<String> lastName;
 }

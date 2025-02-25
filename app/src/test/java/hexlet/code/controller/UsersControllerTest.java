@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,12 +46,14 @@ class UsersControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserMapper mapper;
+    private UserMapper userMapper;
 
     @Autowired
     private ModelGenerator modelGenerator;
 
     private User testUser;
+
+    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     @BeforeEach
     public void setUp() {
@@ -63,16 +66,16 @@ class UsersControllerTest {
 
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
         userRepository.save(testUser);
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
 
     @Test
     public void testIndex() throws Exception {
-        var request = get("/api/users").with(jwt());
-        var result = mockMvc.perform(request)
+        var result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        var body = result.getResponse().getContentAsString();
+        String body = result.getResponse().getContentAsString();
         assertThatJson(body).isArray();
     }
 
@@ -91,7 +94,7 @@ class UsersControllerTest {
                 .andReturn();
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).and(
-                v -> v.node("username").isEqualTo(testUser.getEmail()),
+                v -> v.node("email").isEqualTo(testUser.getUsername()),
                 v -> v.node("firstName").isEqualTo(testUser.getFirstName()),
                 v -> v.node("lastName").isEqualTo(testUser.getLastName()));
     }
@@ -105,21 +108,22 @@ class UsersControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var request = post("/api/users").with(jwt())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testUser));
+        User data = Instancio.of(modelGenerator.getUserModel()).create();
 
+        var request = post("/api/users")
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = userRepository.findByEmail(testUser.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        var user = userRepository.findByEmail(data.getEmail()).orElse(null);
 
         assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
-        assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
-        assertThat(user.getPasswordDigest()).isNotEqualTo(testUser.getPasswordDigest());
+        assertThat(user.getFirstName()).isEqualTo(data.getFirstName());
+        assertThat(user.getLastName()).isEqualTo(data.getLastName());
+        assertThat(user.getEmail()).isEqualTo(data.getEmail());
+        assertThat(user.getPasswordDigest()).isNotEqualTo(data.getPasswordDigest());
     }
 
     @Test
@@ -136,7 +140,8 @@ class UsersControllerTest {
         var data = new HashMap<>();
         data.put("firstName", "Mike");
 
-        var request = put("/api/users/" + testUser.getId()).with(jwt())
+        var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -144,7 +149,7 @@ class UsersControllerTest {
                 .andExpect(status().isOk());
 
         var user = userRepository.findByEmail(testUser.getEmail())
-                .orElseThrow( () -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
         assertThat(user.getFirstName()).isEqualTo(("Mike"));
     }
 
