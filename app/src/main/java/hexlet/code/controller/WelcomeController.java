@@ -11,6 +11,6 @@ public class WelcomeController {
     @GetMapping(path = "/welcome")
     @ResponseStatus(HttpStatus.OK)
     public String welcome() {
-        return "Welcome to Spring!";
+        return "<h1> Welcome to Spring! </h1>";
     }
 }
