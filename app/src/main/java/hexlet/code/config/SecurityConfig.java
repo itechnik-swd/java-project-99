@@ -36,14 +36,11 @@ public class SecurityConfig {
         // По умолчанию всё запрещено
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                    // Разрешаем доступ к корневой странице "/".
-                    .requestMatchers("/").permitAll()
-                    // Разрешаем доступ к "/api/login", чтобы аутентифицироваться и получить токен JWT.
-                    .requestMatchers("/api/login").permitAll()
-                    // Разрешаем доступ к WelcomePage "/welcome", чтобы получить приветственное сообщение.
-                    .requestMatchers("/welcome").permitAll()
-                    .anyRequest().authenticated())
+                .authorizeHttpRequests(authorize -> authorize
+                        // Разрешаем доступ к статическим ресурсам:
+                        .requestMatchers("/", "/welcome", "/api/login").permitAll()
+                        // Все остальные ресурсы требуют авторизацию.
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder)))
                 .httpBasic(Customizer.withDefaults())

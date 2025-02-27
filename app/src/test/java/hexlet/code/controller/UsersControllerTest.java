@@ -3,7 +3,7 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
-import hexlet.code.repository.UserRepository;
+import hexlet.code.repository.UsersRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ class UsersControllerTest {
     private ObjectMapper om;
 
     @Autowired
-    private UserRepository userRepository;
+    private UsersRepository usersRepository;
 
     @Autowired
     private UserMapper mapper;
@@ -54,7 +54,7 @@ class UsersControllerTest {
 
     @BeforeEach
     public void setUp() {
-        userRepository.deleteAll();
+        usersRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
@@ -62,7 +62,7 @@ class UsersControllerTest {
                 .build();
 
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
-        userRepository.save(testUser);
+        usersRepository.save(testUser);
     }
 
     @Test
@@ -114,7 +114,7 @@ class UsersControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = userRepository.findByEmail(data.getEmail())
+        var user = usersRepository.findByEmail(data.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         assertThat(user).isNotNull();
@@ -145,7 +145,7 @@ class UsersControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var user = userRepository.findByEmail(testUser.getEmail())
+        var user = usersRepository.findByEmail(testUser.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         assertThat(user.getFirstName()).isEqualTo(("Mike"));
     }
@@ -169,7 +169,7 @@ class UsersControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        var user = userRepository.findByEmail(testUser.getEmail()).orElse(null);
+        var user = usersRepository.findByEmail(testUser.getEmail()).orElse(null);
         assertThat(user).isNull();
     }
 

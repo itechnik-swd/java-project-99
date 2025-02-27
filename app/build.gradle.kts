@@ -52,7 +52,7 @@ dependencies {
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 
     // Зависимость нужна для работы механизма Spring Data JPA в тестах.
-    // Позволяет автоматически создавать объекты на базе сущностей и сохранять их в базу.
+    // Позволяет автоматически создавать объекты на основе сущностей и сохранять их в базу.
     implementation("net.datafaker:datafaker:2.4.2")
     implementation("org.instancio:instancio-junit:3.6.0")
 
