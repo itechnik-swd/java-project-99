@@ -7,6 +7,7 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +21,14 @@ public class UsersService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<UserDTO> getAllUsers() {
-        return usersRepository.findAll().stream()
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        var users = usersRepository.findAll().stream()
                 .map(userMapper::map)
                 .toList();
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(usersRepository.count()))
+                .body(users);
     }
 
     public UserDTO getUserById(long id) {

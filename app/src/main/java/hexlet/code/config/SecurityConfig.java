@@ -38,7 +38,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         // Разрешаем доступ к статическим ресурсам:
-                        .requestMatchers("/", "/welcome", "/api/login").permitAll()
+                        .requestMatchers(
+                                "/api/login",
+                                "/",
+                                "/welcome",
+                                "/index.html",
+                                "/assets/**").permitAll()
                         // Все остальные ресурсы требуют авторизацию.
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
