@@ -5,12 +5,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import hexlet.code.model.User;
-import hexlet.code.repository.UsersRepository;
+import hexlet.code.repository.UserRepository;
 
 @Component
 public class UserUtils {
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -18,7 +18,7 @@ public class UserUtils {
             return null;
         }
         var email = authentication.getName();
-        return usersRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

@@ -3,7 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
-import hexlet.code.service.UsersService;
+import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,40 +23,40 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class UsersController {
+public class UserController {
 
     @Autowired
-    private UsersService usersService;
+    private UserService userService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
-        return usersService.getAllUsers();
+        return userService.getAllUsers();
     }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserDTO show(@PathVariable long id) {
-        return usersService.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
-        return usersService.createUser(userData);
+        return userService.createUser(userData);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@userUtils.getCurrentUser().id == #id")
     public UserDTO update(@PathVariable long id, @Valid @RequestBody UserUpdateDTO userData) {
-        return usersService.updateUser(id, userData);
+        return userService.updateUser(id, userData);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userUtils.getCurrentUser().id == #id")
     public void delete(@PathVariable long id) {
-        usersService.deleteUser(id);
+        userService.deleteUser(id);
     }
 }

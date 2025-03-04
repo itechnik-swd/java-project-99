@@ -5,7 +5,7 @@ import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
-import hexlet.code.repository.UsersRepository;
+import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,43 +13,43 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UserService {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private UserMapper userMapper;
 
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        var users = usersRepository.findAll().stream()
+        var users = userRepository.findAll().stream()
                 .map(userMapper::map)
                 .toList();
 
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(usersRepository.count()))
+                .header("X-Total-Count", String.valueOf(userRepository.count()))
                 .body(users);
     }
 
     public UserDTO getUserById(long id) {
-        return userMapper.map(usersRepository.findById(id)
+        return userMapper.map(userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found")));
     }
 
     public UserDTO createUser(UserCreateDTO userData) {
-        return userMapper.map(usersRepository.save(userMapper.map(userData)));
+        return userMapper.map(userRepository.save(userMapper.map(userData)));
     }
 
     public UserDTO updateUser(long id, UserUpdateDTO userData) {
-        var user = usersRepository.findById(id)
+        var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
         userMapper.update(userData, user);
-        return userMapper.map(usersRepository.save(user));
+        return userMapper.map(userRepository.save(user));
     }
 
     public void deleteUser(long id) {
-        var user = usersRepository.findById(id)
+        var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        usersRepository.delete(user);
+        userRepository.delete(user);
     }
 }
