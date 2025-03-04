@@ -52,7 +52,7 @@ public class DataInitializer implements ApplicationRunner {
                     taskStatus.setName(status.getRight());
                     taskStatus.setSlug(status.getLeft());
                     return taskStatus;
-                    })
+                })
                 .forEach(taskStatusRepository::save);
     }
 }
