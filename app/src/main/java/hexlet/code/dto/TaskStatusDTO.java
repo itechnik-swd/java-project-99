@@ -5,16 +5,15 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Setter
 @Getter
-public class UserDTO {
-    private long id;
+@Setter
+public class TaskStatusDTO {
 
-    private String email;
+    private Long id;
 
-    private String firstName;
+    private String name;
 
-    private String lastName;
+    private String slug;
 
     private LocalDate createdAt;
 }

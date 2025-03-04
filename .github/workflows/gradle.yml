@@ -16,10 +16,10 @@ jobs:
           distribution: 'temurin'
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 8.5
-          arguments: build
-          build-root-directory: app
+#        with:
+#          gradle-version: 8.5
+#          arguments: build
+#          build-root-directory: app
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v9
         env:

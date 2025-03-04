@@ -1,9 +1,9 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.model.User;
-import hexlet.code.repository.UsersRepository;
+import hexlet.code.mapper.TaskStatusMapper;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UsersControllerTest {
+public class TaskStatusControllerTest {
+
     @Autowired
     private WebApplicationContext wac;
 
@@ -42,32 +43,32 @@ class UsersControllerTest {
     private ObjectMapper om;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private TaskStatusRepository taskStatusRepository;
 
     @Autowired
-    private UserMapper mapper;
+    private TaskStatusMapper taskStatusMapper;
 
     @Autowired
     private ModelGenerator modelGenerator;
 
-    private User testUser;
+    private TaskStatus testTaskStatus;
 
     @BeforeEach
     public void setUp() {
-        usersRepository.deleteAll();
+        taskStatusRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
                 .build();
 
-        testUser = Instancio.of(modelGenerator.getUserModel()).create();
-        usersRepository.save(testUser);
+        testTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
+        taskStatusRepository.save(testTaskStatus);
     }
 
     @Test
     public void testIndex() throws Exception {
-        var request = get("/api/users").with(jwt());
+       var request = get("/api/task_statuses").with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
@@ -78,57 +79,57 @@ class UsersControllerTest {
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        var request = get("/api/users");
+        var request = get("/api/task_statuses");
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testShow() throws Exception {
-        var request = get("/api/users/" + testUser.getId()).with(jwt());
+        var request = get("/api/task_statuses/" + testTaskStatus.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
+
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).and(
-                v -> v.node("email").isEqualTo(testUser.getEmail()),
-                v -> v.node("firstName").isEqualTo(testUser.getFirstName()),
-                v -> v.node("lastName").isEqualTo(testUser.getLastName()));
+                v -> v.node("name").isEqualTo(testTaskStatus.getName()),
+                v -> v.node("slug").isEqualTo(testTaskStatus.getSlug()));
     }
 
     @Test
     public void testShowWithoutAuth() throws Exception {
-        var request = get("/api/users/" + testUser.getId());
+        var request = get("/api/task_statuses/" + testTaskStatus.getId());
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel()).create();
+        var data = Instancio.of(modelGenerator.getTaskStatusModel()).create();
 
-        var request = post("/api/users").with(jwt())
+        var request = post("/api/task_statuses").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = usersRepository.findByEmail(data.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        var taskStatus = taskStatusRepository.findBySlug(data.getSlug())
+                .orElseThrow(() -> new RuntimeException("Task status not found"));
 
-        assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(data.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(data.getLastName());
-        assertThat(user.getEmail()).isEqualTo(data.getEmail());
-        assertThat(user.getPasswordDigest()).isNotEqualTo(data.getPasswordDigest());
+        assertThat(taskStatus).isNotNull();
+        assertThat(taskStatus.getName()).isEqualTo(data.getName());
+        assertThat(taskStatus.getSlug()).isEqualTo(data.getSlug());
     }
 
     @Test
     public void testCreateWithoutAuth() throws Exception {
-        var request = post("/api/users")
+        var request = post("/api/task_statuses")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testUser));
+                .content(om.writeValueAsString(testTaskStatus));
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
@@ -136,26 +137,28 @@ class UsersControllerTest {
     @Test
     public void testUpdate() throws Exception {
         var data = new HashMap<>();
-        data.put("firstName", "Mike");
+        data.put("name", "newStatus");
 
-        var request = put("/api/users/" + testUser.getId()).with(jwt())
+        var request = put("/api/task_statuses/" + testTaskStatus.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var user = usersRepository.findByEmail(testUser.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        assertThat(user.getFirstName()).isEqualTo(("Mike"));
+        var taskStatus = taskStatusRepository.findBySlug(testTaskStatus.getSlug())
+                .orElseThrow(() -> new RuntimeException("Task status not found"));
+
+        assertThat(taskStatus).isNotNull();
+        assertThat(taskStatus.getName()).isEqualTo("newStatus");
     }
 
     @Test
     public void testUpdateWithoutAuth() throws Exception {
         var data = new HashMap<>();
-        data.put("firstName", "Mike");
+        data.put("name", "newStatus");
 
-        var request = put("/api/users/" + testUser.getId())
+        var request = put("/api/task_statuses/" + testTaskStatus.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -165,19 +168,20 @@ class UsersControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        var request = delete("/api/users/" + testUser.getId()).with(jwt());
+        var request = delete("/api/task_statuses/" + testTaskStatus.getId()).with(jwt());
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        var user = usersRepository.findByEmail(testUser.getEmail()).orElse(null);
-        assertThat(user).isNull();
+        var taskStatus = taskStatusRepository.findBySlug(testTaskStatus.getSlug());
+        assertThat(taskStatus).isEmpty();
     }
 
     @Test
     public void testDeleteWithoutAuth() throws Exception {
-        var request = delete("/api/users/" + testUser.getId());
+        var request = delete("/api/task_statuses/" + testTaskStatus.getId());
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
-}
 
+
+}
