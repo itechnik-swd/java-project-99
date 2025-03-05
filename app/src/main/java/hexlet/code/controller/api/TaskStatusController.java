@@ -1,8 +1,8 @@
-package hexlet.code.controller;
+package hexlet.code.controller.api;
 
-import hexlet.code.dto.TaskStatusCreateDTO;
-import hexlet.code.dto.TaskStatusDTO;
-import hexlet.code.dto.TaskStatusUpdateDTO;
+import hexlet.code.dto.taskStatus.TaskStatusCreateDTO;
+import hexlet.code.dto.taskStatus.TaskStatusDTO;
+import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class TaskStatusController {
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskStatusDTO>> index() {
-        return taskStatusService.getAllTaskStatuses();
+        return ResponseEntity.ok(taskStatusService.getAllTaskStatuses().getBody());
     }
 
     @GetMapping(path = "/{id}")
@@ -42,7 +42,7 @@ public class TaskStatusController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    // Добавлять статусы могут только залогиненные пользователи
+    // Добавлять статусы могут только аутентифицированные пользователи
     @PreAuthorize("isAuthenticated()")
     public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusData) {
         return taskStatusService.createTaskStatus(taskStatusData);
@@ -50,7 +50,7 @@ public class TaskStatusController {
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    // Обновлять статусы могут только залогиненные пользователи
+    // Обновлять статусы могут только аутентифицированные пользователи
     @PreAuthorize("isAuthenticated()")
     public TaskStatusDTO update(@PathVariable long id, @Valid @RequestBody TaskStatusUpdateDTO taskStatusData) {
         return taskStatusService.updateTaskStatus(id, taskStatusData);
@@ -58,7 +58,7 @@ public class TaskStatusController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // Удалять статусы могут только залогиненные пользователи
+    // Удалять статусы могут только аутентифицированные пользователи
     @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable long id) {
         taskStatusService.deleteTaskStatus(id);

@@ -1,4 +1,4 @@
-package hexlet.code.controller;
+package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.mapper.UserMapper;
@@ -182,4 +182,3 @@ class UserControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 }
-
