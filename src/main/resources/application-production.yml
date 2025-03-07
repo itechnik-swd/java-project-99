@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: "postgresql://java_project_99_panq_user:zTjs2ufrSST5tp3sNsJWUI5Ug1wcZDYE@dpg-cup3tblds78s738qgrpg-a.frankfurt-postgres.render.com/java_project_99_panq"
+    #    url: "jdbc:postgresql://dpg-cup3tblds78s738qgrpg-a.frankfurt-postgres.render.com:5432/java_project_99_panq"
+    username: "java_project_99_panq_user"
+    password: "zTjs2ufrSST5tp3sNsJWUI5Ug1wcZDYE"
