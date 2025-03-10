@@ -9,6 +9,7 @@ plugins {
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.github.ben-manes.versions") version "0.52.0"
+    id("io.sentry.jvm.gradle") version "5.3.0"
 }
 
 group = "hexlet.code"
@@ -56,6 +57,13 @@ dependencies {
     implementation("net.datafaker:datafaker:2.4.2")
     implementation("org.instancio:instancio-junit:3.6.0")
 
+    // Для работы с Swagger
+    // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+
+    // Для работы с OpenTelemetry (sentry-opentelemetry-agent)
+    implementation("io.sentry:sentry-opentelemetry-agent:8.3.0")
+
     // implementation("org.mockito:mockito-core:5.15.2")
 
     // Для работы с тестами
@@ -78,3 +86,18 @@ tasks.test {
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
+
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+
+    org = "itechnik-swd"
+    projectName = "java-spring-boot"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+}
+
+tasks.sentryBundleSourcesJava {
+    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
+}

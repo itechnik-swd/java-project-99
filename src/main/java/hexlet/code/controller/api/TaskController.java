@@ -2,6 +2,7 @@ package hexlet.code.controller.api;
 
 import hexlet.code.dto.task.TaskCreateDTO;
 import hexlet.code.dto.task.TaskDTO;
+import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.service.TaskService;
 import jakarta.validation.Valid;
@@ -32,8 +33,12 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     // просматривать задачи могут только аутентифицированные пользователи
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<TaskDTO>> index() {
-        return ResponseEntity.ok(taskService.getAllTasks().getBody());
+    public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params) {
+        var tasks = taskService.getAllTasks(params);
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(tasks.size()))
+                .body(tasks);
     }
 
     @GetMapping(path = "/{id}")

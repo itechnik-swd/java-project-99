@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TaskStatusControllerTest {
+class TaskStatusControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -44,9 +44,6 @@ public class TaskStatusControllerTest {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
-
-    @Autowired
-    private TaskStatusMapper taskStatusMapper;
 
     @Autowired
     private ModelGenerator modelGenerator;

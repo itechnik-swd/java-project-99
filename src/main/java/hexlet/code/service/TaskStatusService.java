@@ -8,7 +8,6 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,14 +21,10 @@ public class TaskStatusService {
     @Autowired
     private TaskStatusMapper taskStatusMapper;
 
-    public ResponseEntity<List<TaskStatusDTO>> getAllTaskStatuses() {
-        var taskStatuses = taskStatusRepository.findAll().stream()
+    public List<TaskStatusDTO> getAllTaskStatuses() {
+        return taskStatusRepository.findAll().stream()
                 .map(taskStatusMapper::map)
                 .toList();
-
-        return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(taskStatusRepository.count()))
-                .body(taskStatuses);
     }
 
     public TaskStatusDTO getTaskStatusById(Long id) {

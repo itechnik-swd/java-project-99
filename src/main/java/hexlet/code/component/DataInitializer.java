@@ -2,8 +2,10 @@ package hexlet.code.component;
 
 
 import com.nimbusds.jose.util.Pair;
+import hexlet.code.model.Label;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,9 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -54,5 +59,14 @@ public class DataInitializer implements ApplicationRunner {
                     return taskStatus;
                 })
                 .forEach(taskStatusRepository::save);
+
+        // при старте в приложении уже доступны дефолтные метки с названиями feature, bug.
+        var feature = new Label();
+        feature.setName("feature");
+        labelRepository.save(feature);
+
+        var bug = new Label();
+        bug.setName("bug");
+        labelRepository.save(bug);
     }
 }

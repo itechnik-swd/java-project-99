@@ -39,11 +39,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Разрешаем доступ к статическим ресурсам:
                         .requestMatchers(
-                                "/api/login",
                                 "/",
+                                "/api/login",
                                 "/welcome",
                                 "/index.html",
-                                "/assets/**").permitAll()
+                                "/assets/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs").permitAll()
                         // Все остальные ресурсы требуют авторизацию.
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

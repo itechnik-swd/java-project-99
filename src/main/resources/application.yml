@@ -6,6 +6,12 @@ spring:
   profiles:
     default: development
 
+sentry:
+  dsn: https://0b1c4e5543d804c4c8f48834adcc1a4b@o4508948953300992.ingest.de.sentry.io/4508948967260240
+  # Add data like request headers and IP for users,
+  # see https://docs.sentry.io/platforms/java/guides/spring-boot/data-management/data-collected/ for more info
+  send-default-pii: true
+
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem

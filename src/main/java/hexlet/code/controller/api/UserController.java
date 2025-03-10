@@ -4,7 +4,6 @@ import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
 import hexlet.code.mapper.ReferenceMapper;
-import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
@@ -32,15 +31,16 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private ReferenceMapper referenceMapper;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
-        return ResponseEntity.ok(userService.getAllUsers().getBody());
+        var result = userService.getAllUsers();
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     @GetMapping(path = "/{id}")

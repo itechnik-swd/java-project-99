@@ -4,7 +4,6 @@ import hexlet.code.dto.taskStatus.TaskStatusCreateDTO;
 import hexlet.code.dto.taskStatus.TaskStatusDTO;
 import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.mapper.ReferenceMapper;
-import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
@@ -32,15 +31,16 @@ public class TaskStatusController {
     private TaskStatusService taskStatusService;
 
     @Autowired
-    private TaskStatusMapper taskStatusMapper;
-
-    @Autowired
     private ReferenceMapper referenceMapper;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskStatusDTO>> index() {
-        return ResponseEntity.ok(taskStatusService.getAllTaskStatuses().getBody());
+        var taskStatuses = taskStatusService.getAllTaskStatuses();
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(taskStatuses.size()))
+                .body(taskStatuses);
     }
 
     @GetMapping(path = "/{id}")
