@@ -3,8 +3,6 @@ package hexlet.code.controller.api;
 import hexlet.code.dto.label.LabelCreateDTO;
 import hexlet.code.dto.label.LabelDTO;
 import hexlet.code.dto.label.LabelUpdateDTO;
-import hexlet.code.mapper.ReferenceMapper;
-import hexlet.code.model.Label;
 import hexlet.code.service.LabelService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +28,6 @@ public class LabelController {
 
     @Autowired
     private LabelService labelService;
-
-    @Autowired
-    private ReferenceMapper referenceMapper;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
@@ -75,11 +70,6 @@ public class LabelController {
     // удалять метку могут только аутентифицированные пользователи
     @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable long id) {
-        // Если метка связана с задачей, удалить её нельзя.
-        var label = referenceMapper.toEntity(id, Label.class);
-        if (!label.getTasks().isEmpty()) {
-            throw new RuntimeException("Can't delete a label, because it has tasks");
-        }
         labelService.deleteLabel(id);
     }
 }

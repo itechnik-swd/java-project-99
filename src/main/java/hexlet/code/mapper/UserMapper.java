@@ -30,6 +30,8 @@ public abstract class UserMapper {
 
     public abstract UserDTO map(User model);
 
+    public abstract User map(UserDTO dto);
+
     public abstract void update(UserUpdateDTO dto, @MappingTarget User model);
 
     @BeforeMapping

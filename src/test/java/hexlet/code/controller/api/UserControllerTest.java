@@ -149,7 +149,7 @@ class UserControllerTest {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(("Mike"));
+        assertThat(user.getFirstName()).isEqualTo(data.get("firstName"));
     }
 
     @Test

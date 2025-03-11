@@ -3,7 +3,7 @@ package hexlet.code.controller.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.label.LabelDTO;
-import hexlet.code.mapper.ReferenceMapper;
+import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.ModelGenerator;
@@ -55,7 +55,7 @@ public class LabelControllerTest {
     private ObjectMapper om;
 
     @Autowired
-    private ReferenceMapper referenceMapper;
+    private LabelMapper labelMapper;
 
     private Label testLabel;
 
@@ -89,8 +89,7 @@ public class LabelControllerTest {
         List<LabelDTO> labelDTOList = om.readValue(body, new TypeReference<>() { });
         List<Label> actual = new ArrayList<>();
         labelDTOList.forEach(labelDTO -> {
-            var id = labelDTO.getId();
-            actual.add(referenceMapper.toEntity(id, Label.class));
+            actual.add(labelMapper.map(labelDTO));
         });
 
         List<Label> expected = labelRepository.findAll();

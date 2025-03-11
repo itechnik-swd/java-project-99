@@ -28,7 +28,7 @@ public class UserService {
 
     public UserDTO getUserById(long id) {
         return userMapper.map(userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User found")));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!")));
     }
 
     public UserDTO createUser(UserCreateDTO userData) {
@@ -37,14 +37,18 @@ public class UserService {
 
     public UserDTO updateUser(long id, UserUpdateDTO userData) {
         var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!"));
         userMapper.update(userData, user);
         return userMapper.map(userRepository.save(user));
     }
 
     public void deleteUser(long id) {
         var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!"));
+        // Если пользователь связан хотя бы с одной задачей, его нельзя удалить.
+        if (!user.getTasks().isEmpty()) {
+            throw new RuntimeException("Can't delete user, because it has tasks");
+        }
         userRepository.delete(user);
     }
 }

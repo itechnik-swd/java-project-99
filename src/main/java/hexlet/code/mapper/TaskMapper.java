@@ -20,15 +20,21 @@ import org.mapstruct.ReportingPolicy;
 public abstract class TaskMapper {
     @Mapping(target = "name", source = "title")
     @Mapping(target = "description", source = "content")
-    @Mapping(target = "taskStatus.id", source = "status")
+    @Mapping(target = "taskStatus.slug", source = "status")
     @Mapping(target = "assignee.id", source = "assigneeId")
     public abstract Task map(TaskCreateDTO dto);
 
     @Mapping(target = "title", source = "name")
     @Mapping(target = "content", source = "description")
-    @Mapping(target = "status", source = "taskStatus.id")
+    @Mapping(target = "status", source = "taskStatus.slug")
     @Mapping(target = "assigneeId", source = "assignee.id")
     public abstract TaskDTO map(Task model);
+
+    @Mapping(target = "name", source = "title")
+    @Mapping(target = "description", source = "content")
+    @Mapping(target = "taskStatus.slug", source = "status")
+    @Mapping(target = "assignee.id", source = "assigneeId")
+    public abstract Task map(TaskDTO dto);
 
     @Mapping(target = "name", source = "title")
     @Mapping(target = "description", source = "content")

@@ -57,14 +57,8 @@ public class TaskService {
     }
 
     public TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
-        var task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-        // Добавления меток по их id в задачу при её изменении/обновлении.
-        if (taskUpdateDTO.getTaskLabelIds().isPresent()) {
-            taskUpdateDTO.getTaskLabelIds().get().forEach(labelId -> {
-                task.getLabels().add(labelRepository.findById(labelId)
-                        .orElseThrow(() -> new RuntimeException("Label not found")));
-            });
-        }
+        var task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         taskMapper.update(taskUpdateDTO, task);
         return taskMapper.map(taskRepository.save(task));

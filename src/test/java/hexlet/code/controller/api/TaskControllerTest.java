@@ -3,7 +3,6 @@ package hexlet.code.controller.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.handler.GlobalExceptionHandler;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
@@ -267,10 +266,11 @@ public class TaskControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto));
 
-        mockMvc.perform(request).andExpect(status().isOk());
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
 
-        var task = taskRepository.findById(testTask.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        var task = taskRepository.findById(testTask.getId()).
+                orElseThrow(() -> new ResourceNotFoundException("Task with id " + testTask.getId() + " not found"));
 
         assertThat(task.getName()).isEqualTo(dto.getTitle());
         assertThat(task.getDescription()).isEqualTo(dto.getContent());

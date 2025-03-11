@@ -3,8 +3,6 @@ package hexlet.code.controller.api;
 import hexlet.code.dto.taskStatus.TaskStatusCreateDTO;
 import hexlet.code.dto.taskStatus.TaskStatusDTO;
 import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
-import hexlet.code.mapper.ReferenceMapper;
-import hexlet.code.model.TaskStatus;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +27,6 @@ public class TaskStatusController {
 
     @Autowired
     private TaskStatusService taskStatusService;
-
-    @Autowired
-    private ReferenceMapper referenceMapper;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
@@ -70,11 +65,6 @@ public class TaskStatusController {
     // Удалять статусы могут только аутентифицированные пользователи
     @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable long id) {
-        // Если статус связан хотя бы с одной задачей, его нельзя удалить.
-        var taskStatus = referenceMapper.toEntity(id, TaskStatus.class);
-        if (!taskStatus.getTasks().isEmpty()) {
-            throw new RuntimeException("Can't delete status, because it has tasks");
-        }
         taskStatusService.deleteTaskStatus(id);
     }
 }

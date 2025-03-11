@@ -3,8 +3,6 @@ package hexlet.code.controller.api;
 import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
-import hexlet.code.mapper.ReferenceMapper;
-import hexlet.code.model.User;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +27,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private ReferenceMapper referenceMapper;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
@@ -76,11 +71,6 @@ public class UserController {
      */
     @PreAuthorize("@userUtils.getCurrentUser().id == #id")
     public void delete(@PathVariable long id) {
-        // Если пользователь связан хотя бы с одной задачей, его нельзя удалить.
-        var user = referenceMapper.toEntity(id, User.class);
-        if (!user.getTasks().isEmpty()) {
-            throw new RuntimeException("Can't delete user, because it has tasks");
-        }
         userService.deleteUser(id);
     }
 }

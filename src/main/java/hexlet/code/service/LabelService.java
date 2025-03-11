@@ -42,14 +42,18 @@ public class LabelService {
 
     public LabelDTO updateLabel(Long id, LabelUpdateDTO labelUpdateDTO) {
         var label = labelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Label not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
         labelMapper.update(labelUpdateDTO, label);
         return labelMapper.map(labelRepository.save(label));
     }
 
     public void deleteLabel(Long id) {
         var label = labelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Label not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
+        // Если метка связана с задачей, удалить её нельзя.
+        if (!label.getTasks().isEmpty()) {
+            throw new RuntimeException("Can't delete a label, because it has tasks");
+        }
         labelRepository.delete(label);
     }
 }
