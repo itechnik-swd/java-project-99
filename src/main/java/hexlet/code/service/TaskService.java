@@ -39,17 +39,17 @@ public class TaskService {
         return taskMapper.map(taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found")));
     }
 
-    public TaskDTO createTask(TaskCreateDTO taskDTO) {
+    public TaskDTO createTask(TaskCreateDTO taskCreateDTO) {
         // Проверка на существование задачи с таким названием.
-        if (taskRepository.findByName(taskDTO.getTitle()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Task " + taskDTO.getTitle() + " already exists");
+        if (taskRepository.findByName(taskCreateDTO.getTitle()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Task " + taskCreateDTO.getTitle() + " already exists");
         }
         // Добавления меток по их id в задачу при её создании.
-        var task = taskMapper.map(taskDTO);
-        if (taskDTO.getTaskLabelIds() != null) {
-            taskDTO.getTaskLabelIds().forEach(labelId -> {
+        var task = taskMapper.map(taskCreateDTO);
+        if (taskCreateDTO.getTaskLabelIds() != null) {
+            taskCreateDTO.getTaskLabelIds().forEach(labelId -> {
                 task.getLabels().add(labelRepository.findById(labelId)
-                        .orElseThrow(() -> new RuntimeException("Label not found")));
+                        .orElseThrow(() -> new RuntimeException("Label with ID " + labelId + " not found")));
             });
         }
 

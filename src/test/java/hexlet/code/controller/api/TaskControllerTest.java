@@ -1,6 +1,7 @@
 package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.dto.task.TaskDTO;
 import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
@@ -39,6 +40,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SuppressWarnings("ALL")
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTest {
@@ -128,6 +130,7 @@ public class TaskControllerTest {
         var result = mockMvc.perform(get("/api/tasks").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
+
         var body = result.getResponse().getContentAsString();
 
         assertThatJson(body).isArray();
@@ -138,11 +141,13 @@ public class TaskControllerTest {
         var param = new TaskParamsDTO();
         param.setTitleCont(testTask.getName().substring(1).toLowerCase());
         taskRepository.save(testTask);
+
         var result = mockMvc.perform(get("/api/tasks?titleCont=" + param.getTitleCont()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).isArray().allSatisfy(element ->
                 assertThatJson(element)
                         .and(v -> v.node("title").asString().containsIgnoringCase(testTask.getName()))
@@ -160,6 +165,7 @@ public class TaskControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).isArray().allSatisfy(element ->
                 assertThatJson(element)
                         .and(v -> v.node("assigneeId").isEqualTo(testTask.getAssignee().getId()))
@@ -178,6 +184,7 @@ public class TaskControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).isArray().allSatisfy(element ->
                 assertThatJson(element)
                         .and(v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()))
@@ -201,6 +208,7 @@ public class TaskControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).isArray().allSatisfy(element ->
                 assertThatJson(element)
                         .and(v -> v.node("title").isEqualTo(testTask.getName()))
@@ -217,11 +225,13 @@ public class TaskControllerTest {
         taskRepository.save(testTask);
 
         var request = get("/api/tasks/{id}", testTask.getId()).with(jwt());
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).and(
                 v -> v.node("title").isEqualTo(testTask.getName()),
                 v -> v.node("content").isEqualTo(testTask.getDescription()),
@@ -232,18 +242,18 @@ public class TaskControllerTest {
 
     @Test
     void testCreate() throws Exception {
-
-        var dto = taskMapper.map(testTask);
+        TaskDTO dto = taskMapper.map(testTask);
 
         var request = post("/api/tasks").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto));
 
         mockMvc.perform(request)
-                .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(status().isCreated());
+
         var task = taskRepository.findByName(testTask.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Task with name " + testTask.getName() + " not found"));
 
         assertThat(task).isNotNull();
         assertThat(task.getName()).isEqualTo(testTask.getName());
@@ -270,7 +280,7 @@ public class TaskControllerTest {
                 .andExpect(status().isOk());
 
         var task = taskRepository.findById(testTask.getId()).
-                orElseThrow(() -> new ResourceNotFoundException("Task with id " + testTask.getId() + " not found"));
+                orElseThrow(() -> new ResourceNotFoundException("Task with ID " + testTask.getId() + " not found"));
 
         assertThat(task.getName()).isEqualTo(dto.getTitle());
         assertThat(task.getDescription()).isEqualTo(dto.getContent());
@@ -280,7 +290,9 @@ public class TaskControllerTest {
     @Test
     void testDelete() throws Exception {
         taskRepository.save(testTask);
+
         var request = delete("/api/tasks/{id}", testTask.getId()).with(jwt());
+
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
