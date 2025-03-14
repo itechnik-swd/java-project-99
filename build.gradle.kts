@@ -5,7 +5,7 @@ plugins {
     application
     checkstyle
     jacoco
-    id("io.freefair.lombok") version "8.12.1"
+    id("io.freefair.lombok") version "8.13"
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.github.ben-manes.versions") version "0.52.0"
@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     // Для работы с БД
-    runtimeOnly("com.h2database:h2:2.2.224")
+    runtimeOnly("com.h2database:h2")
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -46,8 +46,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     // Библиотека для автоматического маппинга (конвертации сущностей в DTO и обратно)
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
     // Модуль для частичного обновления объектов
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
@@ -55,7 +55,7 @@ dependencies {
     // Зависимость нужна для работы механизма Spring Data JPA в тестах.
     // Позволяет автоматически создавать объекты на основе сущностей и сохранять их в базу.
     implementation("net.datafaker:datafaker:2.4.2")
-    implementation("org.instancio:instancio-junit:3.6.0")
+    implementation("org.instancio:instancio-junit:5.4.0")
 
     // Для работы с Swagger
     // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
@@ -64,15 +64,15 @@ dependencies {
     // Для работы с OpenTelemetry (sentry-opentelemetry-agent)
     implementation("io.sentry:sentry-opentelemetry-agent:8.3.0")
 
-    // implementation("org.mockito:mockito-core:5.15.2")
+    implementation("org.mockito:mockito-core:5.16.0")
 
     // Для работы с тестами
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation(platform("org.junit:junit-bom:5.12.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     // Для работы с JSON (проверка тела ответа в тестах)
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

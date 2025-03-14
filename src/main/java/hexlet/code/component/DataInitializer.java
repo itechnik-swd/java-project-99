@@ -12,12 +12,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @AllArgsConstructor
+// отключить DataInitializer на время тестов
+@Profile("!test")
+// Класс DataInitializer используется для инициализации базы данных при старте приложения
 public class DataInitializer implements ApplicationRunner {
 
     @Autowired
@@ -36,14 +40,7 @@ public class DataInitializer implements ApplicationRunner {
         user.setPasswordDigest("qwerty");
         userService.createUser(user);
 
-        /*
-        В приложении уже доступны дефолтные статусы со слагами:
-        draft,
-        to_review,
-        to_be_fixed,
-        to_publish,
-        published
-        */
+        //В приложении уже доступны дефолтные статусы со слагами: draft, to_review, to_be_fixed, to_publish, published
         List<Pair<String, String>> statuses = List.of(
                 Pair.of("draft", "Draft"),
                 Pair.of("to_review", "ToReview"),
