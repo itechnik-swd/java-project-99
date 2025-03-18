@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 // Чтобы отключить DataInitializer на время тестов
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 class WelcomeControllerTest {
 
     @Autowired

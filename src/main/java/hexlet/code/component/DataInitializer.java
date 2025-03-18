@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 // отключить DataInitializer на время тестов
-@Profile("!test")
+//@Profile("!test")
 // Класс DataInitializer используется для инициализации базы данных при старте приложения
 public class DataInitializer implements ApplicationRunner {
 
