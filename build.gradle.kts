@@ -64,8 +64,6 @@ dependencies {
     // Для работы с OpenTelemetry (sentry-opentelemetry-agent)
     implementation("io.sentry:sentry-opentelemetry-agent:8.3.0")
 
-    implementation("org.mockito:mockito-core:5.16.0")
-
     // Для работы с тестами
     testImplementation(platform("org.junit:junit-bom:5.12.0"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.0")
