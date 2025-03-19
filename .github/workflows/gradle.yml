@@ -29,7 +29,7 @@ jobs:
 #        with:
 #          coverageCommand: make report
 #          coverageLocations: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
-#      - uses: qltysh/qlty-action/coverage@main
-#        with:
-#          coverage-token: {{secrets.QLTY_COVERAGE_TOKEN}}
-#          files: reports/coverage.xml
+      - uses: qltysh/qlty-action/coverage@main
+        with:
+          coverage-token: {{secrets.QLTY_COVERAGE_TOKEN}}
+          files: reports/coverage.xml
