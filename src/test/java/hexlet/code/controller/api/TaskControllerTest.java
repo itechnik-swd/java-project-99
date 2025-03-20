@@ -114,7 +114,7 @@ class TaskControllerTest {
 
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testTaskStatus);
-        testTask.setLabels(labelSet);
+        testTask.setLabels(Set.of(testLabel));
     }
 
     @AfterEach
