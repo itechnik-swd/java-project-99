@@ -72,7 +72,7 @@ class TaskControllerTest {
     private ModelGenerator modelGenerator;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper om;
 
     @Autowired
     private TaskMapper taskMapper;
@@ -248,21 +248,22 @@ class TaskControllerTest {
 
         var request = post("/api/tasks").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto));
+                .content(om.writeValueAsString(dto));
 
-        mockMvc.perform(request)
-                .andExpect(status().isCreated());
+        var result = mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andReturn();
 
-        var task = taskRepository.findByName(testTask.getName())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Task with name " + testTask.getName() + " not found"));
+        var body = result.getResponse().getContentAsString();
 
-        assertThat(task).isNotNull();
-        assertThat(task.getIndex()).isGreaterThan(0);
-        assertThat(task.getName()).isEqualTo(testTask.getName());
-        assertThat(task.getDescription()).isEqualTo(testTask.getDescription());
-        assertThat(task.getAssignee().getId()).isEqualTo(testTask.getAssignee().getId());
-        assertThat(task.getTaskStatus().getSlug()).isEqualTo(testTask.getTaskStatus().getSlug());
+        assertThatJson(body).and(
+                v -> v.node("id").isPresent(),
+                v -> v.node("title").isEqualTo(testTask.getName()),
+                v -> v.node("content").isEqualTo(testTask.getDescription()),
+                v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()),
+                v -> v.node("assignee_id").isEqualTo(testTask.getAssignee().getId()),
+                v -> v.node("taskLabelIds").isEqualTo(testTask.getLabels())
+        );
     }
 
     @Test
@@ -277,7 +278,7 @@ class TaskControllerTest {
 
         var request = put("/api/tasks/{id}", testTask.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto));
+                .content(om.writeValueAsString(dto));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());

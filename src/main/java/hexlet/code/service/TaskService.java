@@ -7,6 +7,7 @@ import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.specification.TaskSpecification;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TaskService {
@@ -40,20 +42,22 @@ public class TaskService {
     }
 
     public TaskDTO createTask(TaskCreateDTO taskCreateDTO) {
-        // Проверка на существование задачи с таким названием.
-        if (taskRepository.findByName(taskCreateDTO.getTitle()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Task " + taskCreateDTO.getTitle() + " already exists");
-        }
-        // Добавления меток по их id в задачу при её создании.
         var task = taskMapper.map(taskCreateDTO);
+
+        // Получение существующих меток по ID
         if (taskCreateDTO.getTaskLabelIds() != null) {
-            taskCreateDTO.getTaskLabelIds().forEach(labelId -> {
-                task.getLabels().add(labelRepository.findById(labelId)
-                        .orElseThrow(() -> new RuntimeException("Label with ID " + labelId + " not found")));
-            });
+            Set<Label> existingLabels = labelRepository.findByIdIn(taskCreateDTO.getTaskLabelIds());
+            task.setLabels(existingLabels);
         }
 
-        return taskMapper.map(taskRepository.save(task));
+        taskRepository.findAll().stream()
+                .filter(existingTask -> existingTask.equals(task))
+                .findAny()
+                .ifPresent(existing -> {
+                    throw new ResourceAlreadyExistsException("Task " + task.getName() + " already exists");
+                });
+        taskRepository.save(task);
+        return taskMapper.map(task);
     }
 
     public TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
