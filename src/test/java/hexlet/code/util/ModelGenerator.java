@@ -52,7 +52,7 @@ public class ModelGenerator {
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
                 .supply(Select.field(Task::getTaskStatus), () -> Instancio.create(taskStatusModel))
                 .supply(Select.field(Task::getAssignee), () -> Instancio.create(userModel))
-                .supply(Select.field(Task::getLabels), () -> new HashSet<>())
+//                .supply(Select.field(Task::getLabels), () -> new HashSet<>())
                 .toModel();
 
         labelModel = Instancio.of(Label.class)
