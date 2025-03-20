@@ -114,7 +114,7 @@ class TaskControllerTest {
 
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testTaskStatus);
-        testTask.setLabels(labelSet);
+        testTask.setLabels(Set.of(testLabel));
     }
 
     @AfterEach
@@ -258,6 +258,7 @@ class TaskControllerTest {
                         new ResourceNotFoundException("Task with name " + testTask.getName() + " not found"));
 
         assertThat(task).isNotNull();
+        assertThat(task.getIndex()).isGreaterThan(0);
         assertThat(task.getName()).isEqualTo(testTask.getName());
         assertThat(task.getDescription()).isEqualTo(testTask.getDescription());
         assertThat(task.getAssignee().getId()).isEqualTo(testTask.getAssignee().getId());
