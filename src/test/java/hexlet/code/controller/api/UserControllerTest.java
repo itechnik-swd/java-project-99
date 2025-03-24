@@ -1,6 +1,7 @@
 package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
@@ -48,7 +49,7 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserMapper mapper;
+    private UserMapper userMapper;
 
     @Autowired
     private ModelGenerator modelGenerator;
@@ -118,7 +119,7 @@ class UserControllerTest {
                 .andExpect(status().isCreated());
 
         var user = userRepository.findByEmail(data.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         assertThat(user).isNotNull();
         assertThat(user.getFirstName()).isEqualTo(data.getFirstName());

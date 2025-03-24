@@ -8,6 +8,7 @@ import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Label;
+import hexlet.code.model.Task;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.specification.TaskSpecification;
@@ -42,7 +43,7 @@ public class TaskService {
     }
 
     public TaskDTO createTask(TaskCreateDTO taskCreateDTO) {
-        var task = taskMapper.map(taskCreateDTO);
+        Task task = taskMapper.map(taskCreateDTO); // Task map(TaskCreateDTO dto);
 
         // Получение существующих меток по ID
         if (taskCreateDTO.getTaskLabelIds() != null) {
@@ -56,8 +57,9 @@ public class TaskService {
                 .ifPresent(existing -> {
                     throw new ResourceAlreadyExistsException("Task " + task.getName() + " already exists");
                 });
+
         taskRepository.save(task);
-        return taskMapper.map(task);
+        return taskMapper.map(task); // TaskDTO map(Task model)
     }
 
     public TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
