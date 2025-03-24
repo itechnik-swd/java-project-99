@@ -2,9 +2,9 @@
 [![Actions Status](https://github.com/itechnik-swd/java-project-99/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/itechnik-swd/java-project-99/actions)
 ### GitHub Action status:
 [![Actions Status](https://github.com/itechnik-swd/java-project-99/actions/workflows/gradle.yml/badge.svg)](https://github.com/itechnik-swd/java-project-99/actions)
-### Code Climate Badges:
-[![Maintainability](https://api.codeclimate.com/v1/badges/34dadf4da50e8d58e4ef/maintainability)](https://codeclimate.com/github/itechnik-swd/java-project-99/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/34dadf4da50e8d58e4ef/test_coverage)](https://codeclimate.com/github/itechnik-swd/java-project-99/test_coverage)
+### Code quality and coverage Badges:
+[![Maintainability](https://qlty.sh/badges/497c7ba5-5469-4d9f-86ab-1dbb86c52cc5/maintainability.svg)](https://qlty.sh/gh/itechnik-swd/projects/java-project-99)
+[![Code Coverage](https://qlty.sh/badges/497c7ba5-5469-4d9f-86ab-1dbb86c52cc5/test_coverage.svg)](https://qlty.sh/gh/itechnik-swd/projects/java-project-99)
 
 ### Проект модуля #5
 ## Менеджер задач

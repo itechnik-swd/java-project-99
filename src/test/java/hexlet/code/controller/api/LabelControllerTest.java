@@ -89,7 +89,8 @@ class LabelControllerTest {
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isArray();
 
-        List<LabelDTO> labelDTOList = om.readValue(body, new TypeReference<>() { });
+        List<LabelDTO> labelDTOList = om.readValue(body, new TypeReference<>() {
+        });
         List<Label> actual = new ArrayList<>();
         labelDTOList.forEach(labelDTO -> {
             actual.add(labelMapper.map(labelDTO));
