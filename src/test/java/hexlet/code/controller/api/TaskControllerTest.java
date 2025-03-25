@@ -15,7 +15,6 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,14 +113,6 @@ class TaskControllerTest {
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testTaskStatus);
         testTask.setLabels(labelSet);
-    }
-
-    @AfterEach
-    void tearDown() {
-        taskRepository.deleteAll();
-        userRepository.deleteAll();
-        statusRepository.deleteAll();
-        labelRepository.deleteAll();
     }
 
     @Test
@@ -262,6 +253,14 @@ class TaskControllerTest {
                 v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()),
                 v -> v.node("taskLabelIds").isEqualTo(testTask.getLabels().stream().map(Label::getId))
         );
+
+        var task = taskRepository.findByName(testTask.getName()).
+                orElseThrow(() ->
+                        new ResourceNotFoundException("Task with title " + testTask.getName() + " not found"));
+
+        assertThat(task.getName()).isEqualTo(data.getTitle());
+        assertThat(task.getDescription()).isEqualTo(data.getContent());
+        assertThat(task.getTaskStatus().getSlug()).isEqualTo(data.getStatus());
     }
 
     @Test

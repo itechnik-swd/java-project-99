@@ -72,17 +72,20 @@ class UserControllerTest {
     @Test
     public void testIndex() throws Exception {
         var request = get("/api/users").with(jwt());
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).isArray();
     }
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
         var request = get("/api/users");
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
@@ -90,10 +93,13 @@ class UserControllerTest {
     @Test
     public void testShow() throws Exception {
         var request = get("/api/users/" + testUser.getId()).with(jwt());
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
+
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).and(
                 v -> v.node("email").isEqualTo(testUser.getEmail()),
                 v -> v.node("firstName").isEqualTo(testUser.getFirstName()),
@@ -103,6 +109,7 @@ class UserControllerTest {
     @Test
     public void testShowWithoutAuth() throws Exception {
         var request = get("/api/users/" + testUser.getId());
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
@@ -133,6 +140,7 @@ class UserControllerTest {
         var request = post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(testUser));
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
@@ -150,7 +158,7 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         var user = userRepository.findByEmail(testUser.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         assertThat(user).isNotNull();
         assertThat(user.getFirstName()).isEqualTo(data.get("firstName"));
@@ -172,6 +180,7 @@ class UserControllerTest {
     @Test
     public void testDelete() throws Exception {
         var request = delete("/api/users/" + testUser.getId()).with(jwt());
+
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
@@ -182,6 +191,7 @@ class UserControllerTest {
     @Test
     public void testDeleteWithoutAuth() throws Exception {
         var request = delete("/api/users/" + testUser.getId());
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }

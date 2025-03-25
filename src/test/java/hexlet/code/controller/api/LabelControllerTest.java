@@ -9,7 +9,6 @@ import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.ModelGenerator;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,11 +73,6 @@ class LabelControllerTest {
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
     }
 
-    @AfterEach
-    void tearDown() {
-        labelRepository.deleteAll();
-    }
-
     @Test
     void testIndex() throws Exception {
         labelRepository.save(testLabel);
@@ -103,12 +97,12 @@ class LabelControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getLabelModel())
-                .create();
+        var data = Instancio.of(modelGenerator.getLabelModel()).create();
 
         var request = post("/api/labels").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -119,11 +113,13 @@ class LabelControllerTest {
                 v -> v.node("id").isPresent(),
                 v -> v.node("name").isEqualTo(data.getName()),
                 v -> v.node("createdAt").isPresent());
+
+        var label = labelRepository.findByName(data.getName()).orElseThrow();
+        assertThat(label.getName()).isEqualTo(data.getName());
     }
 
     @Test
     void testUpdate() throws Exception {
-
         labelRepository.save(testLabel);
         var name = "update";
 
@@ -145,10 +141,13 @@ class LabelControllerTest {
     @Test
     void testShow() throws Exception {
         labelRepository.save(testLabel);
+
         var result = mockMvc.perform(get("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
+
         var body = result.getResponse().getContentAsString();
+
         assertThatJson(body).and(
                 v -> v.node("id").isPresent(),
                 v -> v.node("name").isEqualTo(testLabel.getName())
@@ -165,6 +164,7 @@ class LabelControllerTest {
                 .andReturn();
 
         var data = labelRepository.findById(testLabel.getId()).orElse(null);
+
         assertThat(data).isNull();
     }
 }

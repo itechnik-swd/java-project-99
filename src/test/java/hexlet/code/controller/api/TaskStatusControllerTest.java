@@ -1,6 +1,7 @@
 package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.ModelGenerator;
@@ -116,7 +117,7 @@ class TaskStatusControllerTest {
                 .andExpect(status().isCreated());
 
         var taskStatus = taskStatusRepository.findBySlug(data.getSlug())
-                .orElseThrow(() -> new RuntimeException("Task status not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task status not found"));
 
         assertThat(taskStatus).isNotNull();
         assertThat(taskStatus.getName()).isEqualTo(data.getName());
