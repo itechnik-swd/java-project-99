@@ -4,10 +4,8 @@ import hexlet.code.dto.task.TaskCreateDTO;
 import hexlet.code.dto.task.TaskDTO;
 import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.dto.task.TaskUpdateDTO;
-import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
-import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class TaskService {
@@ -39,39 +36,26 @@ public class TaskService {
     }
 
     public TaskDTO getTaskById(Long id) {
-        return taskMapper.map(taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found")));
+        return taskMapper.map(taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id=%d not found".formatted(id))));
     }
 
     public TaskDTO createTask(TaskCreateDTO taskCreateDTO) {
         Task task = taskMapper.map(taskCreateDTO); // Task map(TaskCreateDTO dto);
-
-        // Получение существующих меток по ID
-        if (taskCreateDTO.getTaskLabelIds() != null) {
-            Set<Label> existingLabels = labelRepository.findByIdIn(taskCreateDTO.getTaskLabelIds());
-            task.setLabels(existingLabels);
-        }
-
-        taskRepository.findAll().stream()
-                .filter(existingTask -> existingTask.equals(task))
-                .findAny()
-                .ifPresent(existing -> {
-                    throw new ResourceAlreadyExistsException("Task " + task.getName() + " already exists");
-                });
-
         taskRepository.save(task);
         return taskMapper.map(task); // TaskDTO map(Task model)
     }
 
     public TaskDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
         var task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id=%d not found".formatted(id)));
         taskMapper.update(taskUpdateDTO, task);
         return taskMapper.map(taskRepository.save(task));
     }
 
     public void deleteTask(Long id) {
-        var task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        var task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task with id=%d not found".formatted(id)));
         taskRepository.delete(task);
     }
 }

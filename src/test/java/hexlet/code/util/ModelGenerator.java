@@ -13,7 +13,6 @@ import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 @Getter
@@ -35,14 +34,12 @@ public class ModelGenerator {
                 .supply(Select.field(User::getLastName), () -> faker.name().lastName())
                 .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
                 .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password(3, 16))
-                .supply(Select.field(User::getTasks), () -> new ArrayList<>())
                 .toModel();
 
         taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .supply(Select.field(TaskStatus::getName), () -> faker.name().title())
                 .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().sentence(3))
-                .supply(Select.field(TaskStatus::getTasks), () -> new ArrayList<>())
                 .toModel();
 
         taskModel = Instancio.of(Task.class)

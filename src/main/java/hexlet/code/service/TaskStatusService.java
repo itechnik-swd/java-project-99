@@ -5,6 +5,7 @@ import hexlet.code.dto.taskStatus.TaskStatusDTO;
 import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
+import hexlet.code.exception.UnprocessableEntityException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +51,10 @@ public class TaskStatusService {
     public void deleteTaskStatus(long id) {
         var taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskStatus with id " + id + " not found!"));
-        // Если статус связан хотя бы с одной задачей, его нельзя удалить.
-        if (!taskStatus.getTasks().isEmpty()) {
-            throw new RuntimeException("Can't delete status, because it has tasks");
+        try {
+            taskStatusRepository.delete(taskStatus);
+        } catch (Exception e) {
+            throw new UnprocessableEntityException("Can't delete status, because it has tasks");
         }
-        taskStatusRepository.delete(taskStatus);
     }
 }

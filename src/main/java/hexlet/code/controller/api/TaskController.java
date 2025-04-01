@@ -43,8 +43,6 @@ public class TaskController {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    // просматривать задачи могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public TaskDTO show(@PathVariable long id) {
         return taskService.getTaskById(id);
     }

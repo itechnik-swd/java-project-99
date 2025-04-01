@@ -69,6 +69,7 @@ class TaskStatusControllerTest {
     @Test
     public void testIndex() throws Exception {
         var request = get("/api/task_statuses").with(jwt());
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
@@ -80,6 +81,7 @@ class TaskStatusControllerTest {
     @Test
     public void testIndexWithoutAuth() throws Exception {
         var request = get("/api/task_statuses");
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
@@ -87,6 +89,7 @@ class TaskStatusControllerTest {
     @Test
     public void testShow() throws Exception {
         var request = get("/api/task_statuses/" + testTaskStatus.getId()).with(jwt());
+
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
@@ -101,6 +104,7 @@ class TaskStatusControllerTest {
     @Test
     public void testShowWithoutAuth() throws Exception {
         var request = get("/api/task_statuses/" + testTaskStatus.getId());
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
@@ -169,6 +173,7 @@ class TaskStatusControllerTest {
     @Test
     public void testDelete() throws Exception {
         var request = delete("/api/task_statuses/" + testTaskStatus.getId()).with(jwt());
+
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
@@ -179,9 +184,8 @@ class TaskStatusControllerTest {
     @Test
     public void testDeleteWithoutAuth() throws Exception {
         var request = delete("/api/task_statuses/" + testTaskStatus.getId());
+
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
     }
-
-
 }

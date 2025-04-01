@@ -33,4 +33,4 @@ jobs:
         uses: qltysh/qlty-action/coverage@main
         with:
           coverage-token: ${{secrets.QLTY_COVERAGE_TOKEN}}
-          files: reports/coverage.xml
+          files: ${{github.workspace}}/build/reports/tests/test/index.html #reports/coverage.xml
