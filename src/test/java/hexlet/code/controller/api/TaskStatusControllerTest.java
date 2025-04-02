@@ -3,6 +3,7 @@ package hexlet.code.controller.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
@@ -49,12 +50,16 @@ class TaskStatusControllerTest {
     private TaskStatusRepository taskStatusRepository;
 
     @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
     private ModelGenerator modelGenerator;
 
     private TaskStatus testTaskStatus;
 
     @BeforeEach
     public void setUp() {
+        taskRepository.deleteAll();
         taskStatusRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)

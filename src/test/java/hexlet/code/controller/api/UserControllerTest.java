@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
@@ -49,6 +50,9 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Autowired
@@ -58,6 +62,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
+        taskRepository.deleteAll();
         userRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)

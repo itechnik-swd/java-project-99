@@ -33,4 +33,5 @@ jobs:
         uses: qltysh/qlty-action/coverage@main
         with:
           coverage-token: ${{secrets.QLTY_COVERAGE_TOKEN}}
-          files: ${{github.workspace}}/build/reports/tests/test/index.html #reports/coverage.xml
+          coverageCommand: make report
+          files: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco #reports/coverage.xml
