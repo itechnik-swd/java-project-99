@@ -21,17 +21,9 @@ jobs:
           arguments: build
       - run: ./gradlew checkstyleMain
       - run: ./gradlew test
-#      - name: Publish code coverage
-#        uses: paambaati/codeclimate-action@v9.0.0
-#        env:
-#          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-#          JACOCO_SOURCE_PATH: ${{github.workspace}}/src/main/java
-#        with:
-#          coverageCommand: make report
-#          coverageLocations: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
       - name: Quality coverage
         uses: qltysh/qlty-action/coverage@main
         with:
           coverage-token: ${{secrets.QLTY_COVERAGE_TOKEN}}
           coverageCommand: make report
-          files: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco #reports/coverage.xml
+          files: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco

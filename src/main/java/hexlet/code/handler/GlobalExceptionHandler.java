@@ -2,7 +2,7 @@ package hexlet.code.handler;
 
 import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.exception.UnprocessableEntityException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,8 +22,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
-    @ExceptionHandler(UnprocessableEntityException.class)
-    public ResponseEntity<String> handleUnprocessableEntityException(UnprocessableEntityException ex) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
     }
 }

@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +30,6 @@ public class TaskController {
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    // просматривать задачи могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params) {
         var tasks = taskService.getAllTasks(params);
 
@@ -49,16 +46,12 @@ public class TaskController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    // добавлять задачи могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskCreateDTO) {
         return taskService.createTask(taskCreateDTO);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    // редактировать задачи могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public TaskDTO update(@PathVariable long id, @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
         return taskService.updateTask(id, taskUpdateDTO);
     }

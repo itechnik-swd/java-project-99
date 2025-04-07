@@ -4,7 +4,6 @@ import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.exception.UnprocessableEntityException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +45,6 @@ public class UserService {
     public void deleteUser(long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!"));
-        try {
-            userRepository.delete(user);
-        } catch (Exception e) {
-            throw new UnprocessableEntityException("Can't delete user, because it has tasks");
-        }
+        userRepository.delete(user);
     }
 }

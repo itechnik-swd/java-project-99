@@ -43,32 +43,24 @@ public class LabelController {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    // просматривать метку могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public LabelDTO show(@PathVariable long id) {
         return labelService.getLabelById(id);
     }
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    // добавлять метку могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public LabelDTO create(@Valid @RequestBody LabelCreateDTO labelCreateDTO) {
         return labelService.createLabel(labelCreateDTO);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    // обновлять метку могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public LabelDTO update(@PathVariable long id, @Valid @RequestBody LabelUpdateDTO labelUpdateDTO) {
         return labelService.updateLabel(id, labelUpdateDTO);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // удалять метку могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable long id) {
         labelService.deleteLabel(id);
     }

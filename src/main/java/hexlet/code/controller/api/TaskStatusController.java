@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,24 +45,18 @@ public class TaskStatusController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    // Добавлять статусы могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusData) {
         return taskStatusService.createTaskStatus(taskStatusData);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    // Обновлять статусы могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public TaskStatusDTO update(@PathVariable long id, @Valid @RequestBody TaskStatusUpdateDTO taskStatusData) {
         return taskStatusService.updateTaskStatus(id, taskStatusData);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    // Удалять статусы могут только аутентифицированные пользователи
-    @PreAuthorize("isAuthenticated()")
     public void delete(@PathVariable long id) {
         taskStatusService.deleteTaskStatus(id);
     }

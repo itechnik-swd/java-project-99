@@ -29,7 +29,7 @@ public class LabelService {
 
     public LabelDTO getLabelById(Long id) {
         return labelMapper.map(labelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Label not found")));
+                .orElseThrow(() -> new RuntimeException("Label with ID " + id + " not found")));
     }
 
     public LabelDTO createLabel(LabelCreateDTO labelCreateDTO) {
@@ -42,18 +42,14 @@ public class LabelService {
 
     public LabelDTO updateLabel(Long id, LabelUpdateDTO labelUpdateDTO) {
         var label = labelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Label with ID " + id + " not found"));
         labelMapper.update(labelUpdateDTO, label);
         return labelMapper.map(labelRepository.save(label));
     }
 
     public void deleteLabel(Long id) {
         var label = labelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
-        // Если метка связана с задачей, удалить её нельзя.
-        if (!label.getTasks().isEmpty()) {
-            throw new RuntimeException("Can't delete a label, because it has tasks");
-        }
+                .orElseThrow(() -> new ResourceNotFoundException("Label with ID " + id + " not found"));
         labelRepository.delete(label);
     }
 }
